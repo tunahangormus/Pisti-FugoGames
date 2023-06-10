@@ -895,7 +895,6 @@ MonoBehaviour:
   - {fileID: 689879447}
   - {fileID: 127412230}
   midPileController: {fileID: 1995656897}
-  playedCards: []
 --- !u!1 &1722603469
 GameObject:
   m_ObjectHideFlags: 0
