@@ -4,23 +4,23 @@ using UnityEngine;
 
 public class BotLogic
 {
-    public CardController PlayCard(List<CardController> cards, List<CardController> playedCards)
+    public CardController PlayCard(List<CardController> cards, List<Card> playedCards)
     {
-        CardController lastPlayedCard = playedCards[playedCards.Count - 1];
+        Card lastPlayedCard = playedCards[playedCards.Count - 1];
         foreach (CardController card in cards)
         {
-            if (card.CardModel.Value == lastPlayedCard.CardModel.Value)
+            if (card.CardModel.Value == lastPlayedCard.value)
             {
                 return card;
             }
 
-            if (card.CardModel.Value == 11)
+            if (card.CardModel.Value == 11 && playedCards.Count > 1)
             {
                 return card;
             }
         }
 
-        
+
         return cards[Random.Range(0, cards.Count)];
     }
 }

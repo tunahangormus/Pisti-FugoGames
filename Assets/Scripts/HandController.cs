@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-
+using TMPro;
 public class HandController : MonoBehaviour
 {
     [SerializeField]
@@ -26,6 +26,13 @@ public class HandController : MonoBehaviour
     private GameObject stash;
     private List<CardController> stashCards = new List<CardController>();
     public List<CardController> StashCards { get { return stashCards; } }
+
+    [SerializeField]
+    private TextMeshProUGUI scoreText;
+    public TextMeshProUGUI ScoreText { get { return scoreText; } }
+
+    private int score = 0;
+    public int Score { get { return score; } }
 
     public bool IsPlayer
     {
@@ -150,5 +157,15 @@ public class HandController : MonoBehaviour
     public void emptyStash()
     {
         stashCards.Clear();
+    }
+
+    public void AddScore(int score)
+    {
+        this.score += score;
+    }
+
+     public void ResetScore()
+    {
+        this.score = 0;
     }
 }

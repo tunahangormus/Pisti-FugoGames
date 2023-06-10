@@ -17,7 +17,7 @@ public class GameController : MonoBehaviour
     private BotLogic botLogic = new BotLogic();
 
     [SerializeField]
-    private List<CardController> playedCards = new List<CardController>();
+    private List<Card> playedCards = new List<Card>();
 
     private bool isFirstRound = true;
 
@@ -25,7 +25,14 @@ public class GameController : MonoBehaviour
     {
         isFirstRound = true;
         cardPool.createPool();
+        cardPool.gameObject.SetActive(true);
         deck = new CardDeck();
+        foreach (HandController hand in hands)
+        {
+            hand.ResetScore();
+        }
+        ScoreUiManager.Init(hands);
+        ScoreUiManager.UpdateScores();
         foreach (HandController hand in hands)
         {
             hand.GameController = this;
@@ -38,7 +45,7 @@ public class GameController : MonoBehaviour
         CardController cardController = cardPool.getCard();
         cardController.gameObject.SetActive(true);
         Card card = deck.DrawCard();
-        cardController.SetCardValue(card.rank, card.suit);
+        cardController.SetCardValue(card.value, card.suit);
         return cardController;
     }
 
@@ -53,6 +60,11 @@ public class GameController : MonoBehaviour
             cardController.CardView.SetCardFace(isFaceUp, 0.15f * i);
         }
         float duration = hand.PositionCards(0.15f);
+
+        if (deck.RemainingCardsLength() < 1)
+        {
+            cardPool.gameObject.SetActive(false);
+        }
 
         return duration;
     }
@@ -73,7 +85,7 @@ public class GameController : MonoBehaviour
 
             if (i == 3)
             {
-                playedCards.Add(cardController);
+                playedCards.Add(new Card(cardController.CardModel.Value, cardController.CardModel.SuitName));
             }
         }
         return maxDuration;
@@ -81,7 +93,6 @@ public class GameController : MonoBehaviour
 
     IEnumerator StartRound()
     {
-        yield return new WaitForSeconds(0.5f);
         bool allHandsEmpty = true;
         foreach (HandController hand in hands)
         {
@@ -105,6 +116,7 @@ public class GameController : MonoBehaviour
             else
             {
                 Debug.Log("Game Over");
+                Start();
                 yield break;
             }
         }
@@ -134,6 +146,7 @@ public class GameController : MonoBehaviour
     {
         hands[currentPlayer].DisableInputForAllCards();
         yield return new WaitForSeconds(CheckedPlayedCard());
+        ScoreUiManager.UpdateScores();
         EmptyStash(hands[currentPlayer]);
         currentPlayer = (currentPlayer + 1) % hands.Length;
         StartCoroutine(StartRound());
@@ -149,12 +162,16 @@ public class GameController : MonoBehaviour
         CardController lastPlayedCard = midPileController.Cards[midPileController.Cards.Count - 1];
         if (lastPlayedCard.CardModel.Value == 11)
         {
+            midPileController.UpdateScore();
+            hands[currentPlayer].AddScore(midPileController.CurrentScore);
             return CollectCards(hands[currentPlayer]);
         }
 
         CardController midCard = midPileController.Cards[midPileController.Cards.Count - 2];
         if (lastPlayedCard.CardModel.Value == midCard.CardModel.Value)
         {
+            midPileController.UpdateScore();
+            hands[currentPlayer].AddScore(midPileController.CurrentScore);
             return CollectCards(hands[currentPlayer]);
         }
 
@@ -164,7 +181,7 @@ public class GameController : MonoBehaviour
     public IEnumerator CardPlayed(CardController cardController)
     {
         yield return new WaitForSeconds(midPileController.AddCard(cardController));
-        playedCards.Add(cardController);
+        playedCards.Add(new Card(cardController.CardModel.Value, cardController.CardModel.SuitName));
         StartCoroutine(EndRound());
     }
 

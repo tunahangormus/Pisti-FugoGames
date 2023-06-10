@@ -1,16 +1,13 @@
 public class Card
 {
-    public int rank { get; }
+    public int value { get; }
     public Suit suit { get; }
 
-    public Card(int rank, Suit suit)
+    public Card(int value, Suit suit)
     {
-        this.rank = rank;
+        this.value = value;
         this.suit = suit;
     }
 
-    public override string ToString()
-    {
-        return $"{rank} of {suit}";
-    }
+
 }

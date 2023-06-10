@@ -35,7 +35,14 @@ public class CardView : MonoBehaviour
         else
         {
             path = "Sprites/" + suitName;
-            valueText.text = value.ToString();
+            if (value == 1)
+            {
+                valueText.text = "A";
+            }
+            else
+            {
+                valueText.text = value.ToString();
+            }
             valueText.color = (suit == Suit.Spade || suit == Suit.Club) ? blackColor : redColor;
         }
 

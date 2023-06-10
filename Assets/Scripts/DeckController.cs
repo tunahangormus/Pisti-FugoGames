@@ -66,6 +66,7 @@ public class CardDeck
                 newDeck.Add(newCard);
             }
         }
+        
 
         return newDeck;
     }
