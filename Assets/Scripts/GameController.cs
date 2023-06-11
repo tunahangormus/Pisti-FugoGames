@@ -17,10 +17,12 @@ public class GameController : MonoBehaviour
     private BotLogic botLogic = new BotLogic();
 
     [SerializeField]
-    private List<Card> playedCards = new List<Card>();
+    private List<CardData> playedCards = new List<CardData>();
 
     [SerializeField]
     private EndCardController endCardController;
+
+    private UiController uiController = new UiController();
 
     private bool isFirstRound = true;
 
@@ -29,8 +31,7 @@ public class GameController : MonoBehaviour
         isFirstRound = true;
         cardPool.createPool();
         deck = new CardDeck();
-        ScoreUiManager.Init(hands);
-        ScoreUiManager.UpdateScores();
+        uiController.Init(hands);
         foreach (HandController hand in hands)
         {
             hand.GameController = this;
@@ -58,7 +59,7 @@ public class GameController : MonoBehaviour
     {
         CardController cardController = cardPool.getCard();
         cardController.gameObject.SetActive(true);
-        Card card = deck.DrawCard();
+        CardData card = deck.DrawCard();
         cardController.SetCardValue(card.value, card.suit);
         return cardController;
     }
@@ -99,7 +100,7 @@ public class GameController : MonoBehaviour
 
             if (i == 3)
             {
-                playedCards.Add(new Card(cardController.CardModel.Value, cardController.CardModel.SuitName));
+                playedCards.Add(new CardData(cardController.CardModel.Value, cardController.CardModel.SuitName));
             }
         }
         return maxDuration;
@@ -163,7 +164,7 @@ public class GameController : MonoBehaviour
     {
         hands[currentPlayer].DisableInputForAllCards();
         yield return new WaitForSeconds(CheckedPlayedCard());
-        ScoreUiManager.UpdateScores();
+        uiController.UpdateScores();
         EmptyStash(hands[currentPlayer]);
         currentPlayer = (currentPlayer + 1) % hands.Length;
         StartCoroutine(StartRound());
@@ -198,7 +199,7 @@ public class GameController : MonoBehaviour
     public IEnumerator CardPlayed(CardController cardController)
     {
         yield return new WaitForSeconds(midPileController.AddCard(cardController));
-        playedCards.Add(new Card(cardController.CardModel.Value, cardController.CardModel.SuitName));
+        playedCards.Add(new CardData(cardController.CardModel.Value, cardController.CardModel.SuitName));
         StartCoroutine(EndRound());
     }
 
@@ -232,12 +233,12 @@ public class GameController : MonoBehaviour
         }
 
         hands[winnerHandIndex].AddScore(3);
-        ScoreUiManager.UpdateScores();
+        uiController.UpdateScores();
         winnerHandIndex = 0;
 
         for (int i = 1; i < hands.Length; i++)
         {
-        if (hands[i].Score > hands[winnerHandIndex].Score)
+            if (hands[i].Score > hands[winnerHandIndex].Score)
             {
                 winnerHandIndex = i;
             }

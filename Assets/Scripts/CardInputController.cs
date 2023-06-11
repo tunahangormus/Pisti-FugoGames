@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CardInputController : MonoBehaviour, IPointerDownHandler,/* IPointerUpHandler,*/ IDragHandler, IEndDragHandler
+public class CardInputController : MonoBehaviour, IPointerDownHandler, IDragHandler, IEndDragHandler
 {
 
     private HandController handController;
@@ -33,33 +33,19 @@ public class CardInputController : MonoBehaviour, IPointerDownHandler,/* IPointe
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (isInputEnabled && cardController.IsOnHand)
+        if (isInputEnabled && cardController.IsInPosition)
         {
-            // if (transform.localPosition.y - (cardController.CardRectTransform.rect.height * transform.localScale.y) <= 0)
-            // {
-            // }
             handController.ArrangeCards(cardController);
             transform.position = eventData.position;
         }
     }
 
-    // public void OnPointerUp(PointerEventData eventData)
-    // {
-    //     if (isInputEnabled)
-    //     {
-    //         cardController.IsOnHand = false;
-    //         // handController.DragEnd(this);
-    //         handController.PositionCards();
-    //     }
-    // }
-
     public void OnEndDrag(PointerEventData eventData)
     {
         if (isInputEnabled)
         {
-            cardController.IsOnHand = false;
+            cardController.IsInPosition = false;
             handController.DragEnd(cardController);
-            // handController.PositionCards();
         }
     }
 }

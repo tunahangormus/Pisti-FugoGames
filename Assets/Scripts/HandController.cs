@@ -89,14 +89,14 @@ public class HandController : MonoBehaviour
         {
             cards.Remove(selectedCard);
             cards.Insert(cardIndex - 1, selectedCard);
-            cards[cardIndex].IsOnHand = false;
+            cards[cardIndex].IsInPosition = false;
             handPositioner.PositionCard(cards, cards[cardIndex]);
         }
         else if (cardIndex < cards.Count - 1 && selectedCard.transform.localPosition.x > cards[cardIndex + 1].transform.localPosition.x)
         {
             cards.Remove(selectedCard);
             cards.Insert(cardIndex + 1, selectedCard);
-            cards[cardIndex].IsOnHand = false;
+            cards[cardIndex].IsInPosition = false;
             handPositioner.PositionCard(cards, cards[cardIndex]);
 
         }
@@ -109,9 +109,15 @@ public class HandController : MonoBehaviour
 
     public void PlayCard(CardController card)
     {
-        card.IsOnHand = false;
+        card.IsInPosition = false;
         RemoveCard(card);
         card.InputController.DisableInput();
+
+        foreach (CardController c in cards)
+        {
+            c.IsInPosition = false;
+        }
+        PositionCards();
     }
 
     public void DragEnd(CardController card)
@@ -119,15 +125,13 @@ public class HandController : MonoBehaviour
         bool isDroppedOnPlayArea = areaController.CheckCardIsInsidePlayArea(card);
         if (isDroppedOnPlayArea)
         {
-
             StartCoroutine(gameController.CardPlayed(card));
             PlayCard(card);
-            foreach (CardController c in cards)
-            {
-                c.IsOnHand = false;
-            }
         }
-        PositionCards();
+        else
+        {
+            PositionCards();
+        }
     }
 
     public float CollectCardsToStash(List<CardController> pileCards)

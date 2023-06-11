@@ -12,7 +12,6 @@ public class CardView : MonoBehaviour
     private Image spriteRenderer;
 
     [SerializeField]
-    // create text mesh pro object
     private TextMeshProUGUI valueText;
 
     private Color blackColor = new Color(51f / 255f, 54f / 255f, 88f / 255f);

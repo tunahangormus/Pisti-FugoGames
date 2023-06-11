@@ -1,18 +1,19 @@
+using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class ScoreUiManager
+public class UiController
 {
-    // private static List<HandController> hands = new List<HandController>();
-    private static HandController[] hands;
+    private HandController[] hands;
 
-    public static void Init(HandController[] hands)
+    public void Init(HandController[] hands)
     {
-        ScoreUiManager.hands = hands;
+        this.hands = hands;
+        UpdateScores();
     }
 
-    public static void UpdateScores()
+    public void UpdateScores()
     {
         foreach (HandController hand in hands)
         {
@@ -20,6 +21,4 @@ public static class ScoreUiManager
             hand.ScoreText.text = nameText + " | " + hand.Score.ToString();
         }
     }
-
-
 }

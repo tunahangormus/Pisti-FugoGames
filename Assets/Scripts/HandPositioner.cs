@@ -17,11 +17,11 @@ public class HandPositioner
 
             float xPos = CalculatePosition(cards, cardController);
 
-            if (cardController.IsOnHand == false)
+            if (cardController.IsInPosition == false)
             {
                 cardController.transform.DOLocalMove(new Vector3(xPos, 0, 0), tweenDuration)
                     .SetDelay(currentDelay)
-                    .OnComplete(() => { cardController.IsOnHand = true; });
+                    .OnComplete(() => { cardController.IsInPosition = true; });
 
 
                 if (i < cards.Count - 1)
@@ -38,11 +38,11 @@ public class HandPositioner
     {
         float xPos = CalculatePosition(cards, cardController);
 
-        if (cardController.IsOnHand == false)
+        if (cardController.IsInPosition == false)
         {
             cardController.transform.DOKill();
             cardController.transform.DOLocalMove(new Vector3(xPos, 0, 0), 0.35f)
-                .OnComplete(() => { cardController.IsOnHand = true; });
+                .OnComplete(() => { cardController.IsInPosition = true; });
         }
     }
 

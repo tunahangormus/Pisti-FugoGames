@@ -2,19 +2,9 @@ using System;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
 
-public enum Suit
-{
-    Spade, Heart, Diamond, Club
-}
-
-public enum Value
-{
-    Jack, Queen, King
-}
-
 public class CardDeck
 {
-    private List<Card> deck;
+    private List<CardData> deck;
     private int currentCardIndex;
 
     public CardDeck()
@@ -35,34 +25,34 @@ public class CardDeck
         {
             n--;
             int k = Random.Range(0, n + 1);
-            Card temp = deck[k];
+            CardData temp = deck[k];
             deck[k] = deck[n];
             deck[n] = temp;
         }
         currentCardIndex = 0;
     }
 
-    public Card DrawCard()
+    public CardData DrawCard()
     {
         if (currentCardIndex >= deck.Count)
         {
-            throw new InvalidOperationException("No more cards in the deck. Shuffle the deck to start again.");
+            throw new InvalidOperationException("No more cards in the deck.");
         }
 
-        Card drawnCard = deck[currentCardIndex];
+        CardData drawnCard = deck[currentCardIndex];
         currentCardIndex++;
         return drawnCard;
     }
 
-    private List<Card> GenerateDeck()
+    private List<CardData> GenerateDeck()
     {
-        List<Card> newDeck = new List<Card>();
+        List<CardData> newDeck = new List<CardData>();
 
         foreach (Suit suit in Enum.GetValues(typeof(Suit)))
         {
             for (int rank = 1; rank <= 13; rank++)
             {
-                Card newCard = new Card(rank, suit);
+                CardData newCard = new CardData(rank, suit);
                 newDeck.Add(newCard);
             }
         }

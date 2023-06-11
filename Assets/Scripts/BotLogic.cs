@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BotLogic
 {
-    public CardController PlayCard(List<CardController> cards, List<Card> playedCards, List<CardController> midPileCards)
+    public CardController PlayCard(List<CardController> cards, List<CardData> playedCards, List<CardController> midPileCards)
     {
 
         CardController lastPlayedCard = null;
@@ -48,10 +48,10 @@ public class BotLogic
         return cards[Random.Range(0, cards.Count)];
     }
 
-    private int CountPlayedCard(CardController card, List<Card> playedCards)
+    private int CountPlayedCard(CardController card, List<CardData> playedCards)
     {
         int count = 0;
-        foreach (Card playedCard in playedCards)
+        foreach (CardData playedCard in playedCards)
         {
             if (playedCard.value == card.CardModel.Value)
             {
