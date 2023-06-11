@@ -24,6 +24,8 @@ public class HandController : MonoBehaviour
 
     [SerializeField]
     private GameObject stash;
+    private int stashCount = 0;
+    public int StashCount { get { return stashCount; } }
     private List<CardController> stashCards = new List<CardController>();
     public List<CardController> StashCards { get { return stashCards; } }
 
@@ -34,23 +36,14 @@ public class HandController : MonoBehaviour
     private int score = 0;
     public int Score { get { return score; } }
 
-    public bool IsPlayer
-    {
-        get
-        {
-            return isPlayer;
-        }
-    }
+    public bool IsPlayer { get { return isPlayer; } }
+
 
     public void AddCard(CardController card)
     {
         card.transform.SetParent(transform);
         card.SetHandController(this);
         cards.Add(card);
-        // if (isPlayer)
-        // {
-        //     EnableInput(card);
-        // }
     }
 
     public void RemoveCard(CardController card)
@@ -103,7 +96,6 @@ public class HandController : MonoBehaviour
         {
             cards.Remove(selectedCard);
             cards.Insert(cardIndex + 1, selectedCard);
-            // PositionCards();
             cards[cardIndex].IsOnHand = false;
             handPositioner.PositionCard(cards, cards[cardIndex]);
 
@@ -148,6 +140,7 @@ public class HandController : MonoBehaviour
             card.transform.DOLocalMove(Vector3.zero, tweenDuration).SetDelay(delay);
             delay += 0.05f;
             stashCards.Add(card);
+            stashCount++;
         }
 
         return tweenDuration + delay;
@@ -164,7 +157,7 @@ public class HandController : MonoBehaviour
         this.score += score;
     }
 
-     public void ResetScore()
+    public void ResetScore()
     {
         this.score = 0;
     }

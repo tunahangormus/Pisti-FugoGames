@@ -19,18 +19,16 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private List<Card> playedCards = new List<Card>();
 
+    [SerializeField]
+    private EndCardController endCardController;
+
     private bool isFirstRound = true;
 
     void Start()
     {
         isFirstRound = true;
         cardPool.createPool();
-        cardPool.gameObject.SetActive(true);
         deck = new CardDeck();
-        foreach (HandController hand in hands)
-        {
-            hand.ResetScore();
-        }
         ScoreUiManager.Init(hands);
         ScoreUiManager.UpdateScores();
         foreach (HandController hand in hands)
@@ -38,6 +36,22 @@ public class GameController : MonoBehaviour
             hand.GameController = this;
         }
         StartCoroutine(StartRound());
+    }
+
+    public void Restart()
+    {
+        cardPool.gameObject.SetActive(true);
+        foreach (HandController hand in hands)
+        {
+            hand.ResetScore();
+        }
+        List<CardController> midPileCards = midPileController.GetCardsAndEmptyPile();
+        foreach (CardController card in midPileCards)
+        {
+            cardPool.ReturnCard(card);
+        }
+        endCardController.HideEndCard();
+        Start();
     }
 
     CardController GetNewCard()
@@ -93,6 +107,10 @@ public class GameController : MonoBehaviour
 
     IEnumerator StartRound()
     {
+        if (isFirstRound)
+        {
+            yield return new WaitForSeconds(0.5f);
+        }
         bool allHandsEmpty = true;
         foreach (HandController hand in hands)
         {
@@ -115,8 +133,7 @@ public class GameController : MonoBehaviour
             }
             else
             {
-                Debug.Log("Game Over");
-                Start();
+                EndGame();
                 yield break;
             }
         }
@@ -135,7 +152,7 @@ public class GameController : MonoBehaviour
         else
         {
             yield return new WaitForSeconds(Random.Range(0.25f, 0.75f));
-            CardController playedCard = botLogic.PlayCard(hands[currentPlayer].Cards, playedCards);
+            CardController playedCard = botLogic.PlayCard(hands[currentPlayer].Cards, playedCards, midPileController.Cards);
             hands[currentPlayer].PlayCard(playedCard);
             playedCard.CardView.SetCardFace(true, 0.1f);
             StartCoroutine(CardPlayed(playedCard));
@@ -194,10 +211,40 @@ public class GameController : MonoBehaviour
     {
         foreach (CardController stashCard in hand.StashCards)
         {
-            cardPool.returnCard(stashCard);
+            cardPool.ReturnCard(stashCard);
         }
         hand.emptyStash();
     }
 
+    void EndGame()
+    {
 
+        int maxStashCount = 0;
+        int winnerHandIndex = 0;
+
+        for (int i = 0; i < hands.Length; i++)
+        {
+            if (hands[i].StashCount > maxStashCount)
+            {
+                maxStashCount = hands[i].StashCount;
+                winnerHandIndex = i;
+            }
+        }
+
+        hands[winnerHandIndex].AddScore(3);
+        ScoreUiManager.UpdateScores();
+        winnerHandIndex = 0;
+
+        for (int i = 1; i < hands.Length; i++)
+        {
+        if (hands[i].Score > hands[winnerHandIndex].Score)
+            {
+                winnerHandIndex = i;
+            }
+        }
+
+
+        endCardController.SetEndText(hands[winnerHandIndex].IsPlayer ? "Oyuncu Kazandı" : "Bilgisayar Kazandı");
+        endCardController.ShowEndCard();
+    }
 }

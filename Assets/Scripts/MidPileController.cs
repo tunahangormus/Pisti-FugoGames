@@ -23,7 +23,7 @@ public class MidPileController : MonoBehaviour
             cardPosition.y = Random.Range(30f, -30f);
         }
 
-        float tweenDuration = 0.5f;
+        float tweenDuration = 0.4f;
         cardController.transform.DOLocalMove(cardPosition, tweenDuration).SetDelay(delay).SetEase(Ease.InOutSine);
 
         return tweenDuration + delay;

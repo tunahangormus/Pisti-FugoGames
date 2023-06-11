@@ -30,7 +30,7 @@ public class CardPool : MonoBehaviour
         return card;
     }
 
-    public void returnCard(CardController card)
+    public void ReturnCard(CardController card)
     {
         card.gameObject.SetActive(false);
         card.transform.position = transform.position;

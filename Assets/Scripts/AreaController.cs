@@ -30,7 +30,7 @@ public class AreaController : MonoBehaviour
 
     public bool CheckCardInsideHandArea(CardController cardController)
     {
-        if (playAreaRectTransform.position.y - (playAreaRectTransform.rect.size.y * 0.7) > cardController.CardRectTransform.position.y)
+        if (playAreaRectTransform.position.y - (playAreaRectTransform.rect.size.y * 0.25) > cardController.CardRectTransform.position.y)
         {
             return true;
         }
